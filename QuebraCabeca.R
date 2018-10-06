@@ -25,7 +25,7 @@ Ops.QuebraCabeca = function(obj1,obj2){
 
 ## Sobrecarga da função genérica "print" do R
 print.QuebraCabeca <- function(obj) {
-  cat("(Pecas): (", obj$desc, ")\n")
+  cat("(P11 P12 P13 P21 P22 P23 P31 P32 P33): (", obj$desc, ")\n")
   cat("G(n): ", obj$g, "\n")
   cat("H(n): ", obj$h, "\n")
   cat("F(n): ", obj$f, "\n")
@@ -52,31 +52,40 @@ geraFilhos.QuebraCabeca <- function(obj) {
 
   desc <- obj$desc
   
-  bAtual <- as.numeric(desc[9])
+  bAtual <- as.numeric(desc[8]) ##?
   
-  bNovo <- as.numeric(bAtual != 1)
+  bNovo <- as.numeric(bAtual != 1) ##?
   
   ## gera filhos usando todos os operadores  
-  operadores <- list(c(1,0,bAtual), c(-1,0,bAtual), c(0,1,bAtual), c(0,-1,bAtual))
   
-  filhosDesc <- lapply(operadores, function(op) desc+op)
-  
-  ## verifica estados filhos incompatíveis com o problema  
-  incompativeis <- sapply(1:length(filhosDesc),
-                    function(i) {
-                      fDesc <- filhosDesc[[i]]
-                      if((any(fDesc[1:2] > 3)) || ## Se algum eixo ultrapassar a posicao 2
-                         (any(fDesc[1:2] < 1)))   ## Se algum eixo ultrapassar a posicao 0
-                        i ## é incompatível: retorna índice
-                      else
-                        0 ## senão é compatível
-                    })
-  
-  ## mantém no vetor apenas os que são incompatíveis
-  incompativeis <- incompativeis[incompativeis != 0]
-  
-  ## remove estados filhos incompatíveis
-  filhosDesc <- filhosDesc[-incompativeis]
+  filhosDesc <- sapply(1:length(desc),
+                          function(i) {
+                            fDesc <- desc
+                            if( (i-3) > 0 && (i-3) < 10 && desc[i-3] == -1){ ## Se a posicao esta vazia
+                              temp <- fDesc[i]
+                              fDesc[i] <- fDesc[i-3]
+                              fDesc[i-3] <- temp
+                              fDesc
+                            }
+                            else if( (i-1) > 0 && (i-1) < 10 && desc[i-1] == -1){ ## Se a posicao esta vazia
+                              temp <- fDesc[i]
+                              fDesc[i] <- fDesc[i-1]
+                              fDesc[i-1] <- temp
+                              fDesc
+                            }
+                            else if( (i+1) > 0 && (i+1) < 10 && desc[i+1] == -1){ ## Se a posicao esta vazia
+                                temp <- fDesc[i]
+                              fDesc[i] <- fDesc[i+1]
+                              fDesc[i+1] <- temp
+                              fDesc
+                            }
+                            else if( (i+3) > 0 && (i+3) < 10 && desc[i+3] == -1){ ## Se a posicao esta vazia
+                              temp <- fDesc[i]
+                              fDesc[i] <- fDesc[i+3]
+                              fDesc[i+3] <- temp
+                              fDesc
+                            }
+                          })
   
   ## gera os objetos QuebraCabeca para os filhos
   for(filhoDesc in filhosDesc){
