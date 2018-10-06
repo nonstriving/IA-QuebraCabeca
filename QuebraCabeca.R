@@ -25,7 +25,7 @@ Ops.QuebraCabeca = function(obj1,obj2){
 
 ## Sobrecarga da função genérica "print" do R
 print.QuebraCabeca <- function(obj) {
-  cat("(M C B): (", obj$desc, ")\n")
+  cat("(Pecas): (", obj$desc, ")\n")
   cat("G(n): ", obj$g, "\n")
   cat("H(n): ", obj$h, "\n")
   cat("F(n): ", obj$f, "\n")
@@ -40,8 +40,8 @@ heuristica.QuebraCabeca <- function(atual){
   
   if(is.null(atual$desc))
     return(Inf)
-  h(obj) = P11 + P12 + P21 + P22 + P31 + P32 + P41 + P42 + P51 + P52 + P61 + P62 + P71 + P72 + P81 + P82
-  return(sum(h(obj)))
+  ## h(obj) = M + C + B
+  return(sum(atual$desc))
 }
 
 geraFilhos.QuebraCabeca <- function(obj) {
@@ -52,30 +52,21 @@ geraFilhos.QuebraCabeca <- function(obj) {
 
   desc <- obj$desc
   
-  bAtual <- as.numeric(desc[16])
+  bAtual <- as.numeric(desc[9])
   
   bNovo <- as.numeric(bAtual != 1)
   
   ## gera filhos usando todos os operadores  
-  if(bAtual == 1){
-    
-    operadores <- list(c(2,0,bAtual), c(0,2,bAtual), c(1,1,bAtual), c(1,0,bAtual), c(0,1,bAtual))
-    
-    filhosDesc <- lapply(operadores, function(op) desc-op)
-    
-  } else {
-    
-    operadores <- list(c(1,0,bNovo), c(-1,0,bNovo), c(0,1,bNovo), c(0,-1,bNovo))
-    
-    filhosDesc <- lapply(operadores, function(op) desc+op)
-  }
+  operadores <- list(c(1,0,bAtual), c(-1,0,bAtual), c(0,1,bAtual), c(0,-1,bAtual))
+  
+  filhosDesc <- lapply(operadores, function(op) desc+op)
   
   ## verifica estados filhos incompatíveis com o problema  
   incompativeis <- sapply(1:length(filhosDesc),
                     function(i) {
                       fDesc <- filhosDesc[[i]]
-                      if((any(fDesc[1:2] > 2)) || ## Se algum eixo ultrapassar a posicao 2
-                         (any(fDesc[1:2] < 0)))   ## Se algum eixo ultrapassar a posicao 0
+                      if((any(fDesc[1:2] > 3)) || ## Se algum eixo ultrapassar a posicao 2
+                         (any(fDesc[1:2] < 1)))   ## Se algum eixo ultrapassar a posicao 0
                         i ## é incompatível: retorna índice
                       else
                         0 ## senão é compatível
