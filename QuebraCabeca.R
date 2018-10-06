@@ -1,6 +1,7 @@
+setwd("/Users/samara/Downloads/basicAI_Search-master")
 source("Estado.R")
 
-## Classe e métodos para o problema dos 3 Missionários e 3 Canibais
+## Classe e m??todos para o problema dos 3 Mission??rios e 3 Canibais
 QuebraCabeca <- function(desc = NULL, pai = NULL){
 
   e <- environment()
@@ -16,14 +17,14 @@ QuebraCabeca <- function(desc = NULL, pai = NULL){
   return(e)
 }
 
-## Sobrecarregando o operador "==" para comparação entre estados
+## Sobrecarregando o operador "==" para compara????o entre estados
 Ops.QuebraCabeca = function(obj1,obj2){
   if(.Generic == "=="){
     return(all(obj1$desc == obj2$desc))
   }
 }
 
-## Sobrecarga da função genérica "print" do R
+## Sobrecarga da fun????o gen??rica "print" do R
 print.QuebraCabeca <- function(obj) {
   cat("(P11 P12 P13 P21 P22 P23 P31 P32 P33): (", obj$desc, ")\n")
   cat("G(n): ", obj$g, "\n")
@@ -31,7 +32,7 @@ print.QuebraCabeca <- function(obj) {
   cat("F(n): ", obj$f, "\n")
 }
 
-## Sobrecarga da função genérica "heuristica", definida por Estado.R
+## Sobrecarga da fun????o gen??rica "heuristica", definida por Estado.R
 heuristica.QuebraCabeca <- function(atual){
   
   ## Se uma peca nao estiver na sua posicao objetivo,
@@ -41,7 +42,7 @@ heuristica.QuebraCabeca <- function(atual){
   if(is.null(atual$desc))
     return(Inf)
   ## h(obj) = M + C + B
-  return(sum(atual$desc))
+  return(0) ##sum(atual$desc)
 }
 
 geraFilhos.QuebraCabeca <- function(obj) {
@@ -52,39 +53,40 @@ geraFilhos.QuebraCabeca <- function(obj) {
 
   desc <- obj$desc
   
-  bAtual <- as.numeric(desc[8]) ##?
-  
-  bNovo <- as.numeric(bAtual != 1) ##?
-  
   ## gera filhos usando todos os operadores  
   
   filhosDesc <- sapply(1:length(desc),
                           function(i) {
-                            fDesc <- desc
+                            fDesc1 <- desc
+                            fDesc2 <- desc
+                            fDesc3 <- desc
+                            fDesc4 <- desc
                             if( (i-3) > 0 && (i-3) < 10 && desc[i-3] == -1){ ## Se a posicao esta vazia
-                              temp <- fDesc[i]
-                              fDesc[i] <- fDesc[i-3]
-                              fDesc[i-3] <- temp
-                              fDesc
+                              temp <- fDesc1[i]
+                              fDesc1[i] <- fDesc1[i-3]
+                              fDesc1[i-3] <- temp
+                              fDesc4 <- fDesc1
                             }
-                            else if( (i-1) > 0 && (i-1) < 10 && desc[i-1] == -1){ ## Se a posicao esta vazia
-                              temp <- fDesc[i]
-                              fDesc[i] <- fDesc[i-1]
-                              fDesc[i-1] <- temp
-                              fDesc
+                            if( (i-1) > 0 && (i-1) < 10 && desc[i-1] == -1){ ## Se a posicao esta vazia
+                              temp <- fDesc2[i]
+                              fDesc2[i] <- fDesc2[i-1]
+                              fDesc2[i-1] <- temp
+                              fDesc4 <- c(fDesc1,fDesc2)
                             }
-                            else if( (i+1) > 0 && (i+1) < 10 && desc[i+1] == -1){ ## Se a posicao esta vazia
-                                temp <- fDesc[i]
-                              fDesc[i] <- fDesc[i+1]
-                              fDesc[i+1] <- temp
-                              fDesc
+                            if( (i+1) > 0 && (i+1) < 10 && desc[i+1] == -1){ ## Se a posicao esta vazia
+                              temp <- fDesc3[i]
+                              fDesc3[i] <- fDesc3[i+1]
+                              fDesc3[i+1] <- temp
+                              fDesc4 <- c(fDesc1,fDesc2,fDesc3)
                             }
-                            else if( (i+3) > 0 && (i+3) < 10 && desc[i+3] == -1){ ## Se a posicao esta vazia
-                              temp <- fDesc[i]
-                              fDesc[i] <- fDesc[i+3]
-                              fDesc[i+3] <- temp
-                              fDesc
+                            if( (i+3) > 0 && (i+3) < 10 && desc[i+3] == -1){ ## Se a posicao esta vazia
+                              temp <- fDesc4[i]
+                              fDesc4[i] <- fDesc4[i+3]
+                              fDesc4[i+3] <- temp
+                              fDesc4 <- c(fDesc1,fDesc2,fDesc3,fDesc4)
                             }
+                            print("teste")
+                            fDesc4
                           })
   
   ## gera os objetos QuebraCabeca para os filhos

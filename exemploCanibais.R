@@ -1,3 +1,5 @@
+setwd("/Users/samara/Downloads/basicAI_Search-master")
+
 debugSource("QuebraCabeca.R")
 debugSource("buscaDesinformada.R")
 debugSource("buscaInformada.R")
